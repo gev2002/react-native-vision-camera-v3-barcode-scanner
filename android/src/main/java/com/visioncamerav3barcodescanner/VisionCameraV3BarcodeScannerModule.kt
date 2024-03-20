@@ -26,12 +26,13 @@ import com.google.mlkit.vision.common.InputImage
 import com.mrousavy.camera.frameprocessor.Frame
 import com.mrousavy.camera.frameprocessor.FrameProcessorPlugin
 import com.mrousavy.camera.frameprocessor.VisionCameraProxy
+import com.mrousavy.camera.types.Orientation
 
 class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map<String, Any>?): FrameProcessorPlugin() {
 
   override fun callback(frame: Frame, arguments: Map<String, Any>?): Any {
-    val optionsBuilder = BarcodeScannerOptions.Builder()
-
+    try {
+     val optionsBuilder = BarcodeScannerOptions.Builder()
       if (arguments?.get("code-128").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_CODE_128)
       else if (arguments?.get("code-39").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_CODE_39)
       else if (arguments?.get("code-93").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_CODE_93)
@@ -48,10 +49,11 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
       else if (arguments?.get("all").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_ALL_FORMATS)
       else optionsBuilder.setBarcodeFormats(FORMAT_ALL_FORMATS)
 
-    val scanner = BarcodeScanning.getClient(optionsBuilder.build())
-    val mediaImage: Image = frame.image
-    try {
-      val image = InputImage.fromMediaImage(mediaImage, 0)
+       val scanner = BarcodeScanning.getClient(optionsBuilder.build())
+      val mediaImage: Image = frame.image
+      val orientation: Orientation = frame.orientation
+
+      val image = InputImage.fromMediaImage(mediaImage, orientation.toDegrees())
       val task: Task<List<Barcode>> = scanner.process(image)
       val barcodes: List<Barcode> = Tasks.await(task)
       val array = WritableNativeArray()
@@ -66,7 +68,6 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
           map.putInt("left",bounds.left)
           map.putInt("right",bounds.right)
         }
-
         val rawValue = barcode.rawValue
         map.putString("rawValue",rawValue)
         val valueType = barcode.valueType
@@ -82,14 +83,13 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
             map.putString("title",title)
             val url = barcode.url!!.url
             map.putString("url",url)
-
           }
         }
         array.pushMap(map)
       }
       return array.toArrayList()
     } catch (e: Exception) {
-       throw  Exception("Error processing Barcode Scanner: $e ")
+       throw  Exception("Error processing barcode scanner: $e ")
     }
   }
 

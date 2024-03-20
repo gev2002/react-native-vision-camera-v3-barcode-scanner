@@ -58,8 +58,9 @@
     MLKBarcodeScanner *barcodeScanner = [MLKBarcodeScanner barcodeScannerWithOptions:options];
 
     CMSampleBufferRef buffer = frame.buffer;
-
+    UIImageOrientation orientation = frame.orientation;
     MLKVisionImage *image = [[MLKVisionImage alloc] initWithBuffer:buffer];
+    image.orientation = orientation;
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     dispatch_group_t dispatchGroup = dispatch_group_create();
     dispatch_group_enter(dispatchGroup);
