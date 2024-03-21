@@ -61,46 +61,50 @@
     UIImageOrientation orientation = frame.orientation;
     MLKVisionImage *image = [[MLKVisionImage alloc] initWithBuffer:buffer];
     image.orientation = orientation;
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    NSMutableArray *data = [NSMutableArray array];
     dispatch_group_t dispatchGroup = dispatch_group_create();
     dispatch_group_enter(dispatchGroup);
-    __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         [barcodeScanner processImage:image
                           completion:^(NSArray<MLKBarcode *> *_Nullable barcodes,
                                        NSError *_Nullable error) {
             if (error != nil) {
-                [NSException raise:@"Error processing Barcodes Scanner" format:@"%@",error];
+                RCTResponseErrorBlock error;
+                return;
             }
             if (barcodes.count > 0) {
                 for (MLKBarcode *barcode in barcodes) {
-                    NSArray *corners = barcode.cornerPoints;
+                    NSMutableDictionary *obj = [[NSMutableDictionary alloc] init];
+
                     NSString *displayValue = barcode.displayValue;
-                    data[@"displayValue"] = displayValue;
+                    obj[@"displayValue"] = displayValue;
                     NSString *rawValue = barcode.rawValue;
-                    data[@"rawValue"] = rawValue;
-                    data[@"left"] = @(CGRectGetMinX(barcode.frame));
-                    data[@"top"] = @(CGRectGetMinY(barcode.frame));
-                    data[@"right"] = @(CGRectGetMaxX(barcode.frame));
-                    data[@"bottom"] = @(CGRectGetMaxY(barcode.frame));
-                    data[@"width"] = @(barcode.frame.size.width);
-                    data[@"height"] = @(barcode.frame.size.height);
+                    obj[@"rawValue"] = rawValue;
+                    obj[@"left"] = @(CGRectGetMinX(barcode.frame));
+                    obj[@"top"] = @(CGRectGetMinY(barcode.frame));
+                    obj[@"right"] = @(CGRectGetMaxX(barcode.frame));
+                    obj[@"bottom"] = @(CGRectGetMaxY(barcode.frame));
+                    obj[@"width"] = @(barcode.frame.size.width);
+                    obj[@"height"] = @(barcode.frame.size.height);
 
                     MLKBarcodeValueType valueType = barcode.valueType;
 
                     switch (valueType) {
                         case MLKBarcodeValueTypeWiFi:
-                            data[@"ssid"] = barcode.wifi.ssid;
-                            data[@"password"] = barcode.wifi.password;
+                            obj[@"ssid"] = barcode.wifi.ssid;
+                            obj[@"password"] = barcode.wifi.password;
                             break;
                         case MLKBarcodeValueTypeURL:
-                            data[@"url"] = barcode.URL.url;
-                            data[@"title"] = barcode.URL.title;
+                            obj[@"url"] = barcode.URL.url;
+                            obj[@"title"] = barcode.URL.title;
                             break;
                         default:
                             break;
                     }
+                    [data addObject:obj];
+
                 }
+
             }
 
             dispatch_group_leave(dispatchGroup);
