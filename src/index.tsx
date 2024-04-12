@@ -5,7 +5,7 @@ import {
 } from 'react-native-vision-camera';
 import { useRunInJS } from 'react-native-worklets-core';
 import { scanBarcodes } from './scanBarcodes';
-import type { CameraTypes, Frame, FrameProcessor } from './types';
+import type { CameraTypes, Frame, FrameProcessor, BarcodeDataMap } from './types';
 
 export { scanBarcodes } from './scanBarcodes';
 export type { BarcodeData, BarcodeDataMap } from './types'
