@@ -22,7 +22,7 @@ export interface ScanBarcodeOptions {
     | 'upc-a';
 }
 
-export interface BarcodeData {
+export type BarcodeData = {
   bottom: number
   height: number
   left: number
@@ -32,7 +32,7 @@ export interface BarcodeData {
   width: number
 }
 
-export interface BarcodeDataMap {
+export type BarcodeDataMap = {
   [key: number]: BarcodeData
 }
 
