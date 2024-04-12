@@ -22,7 +22,21 @@ export interface ScanBarcodeOptions {
     | 'upc-a';
 }
 
+export interface BarcodeData {
+  bottom: number
+  height: number
+  left: number
+  rawValue: string
+  right: number
+  top: number
+  width: number
+}
+
+export interface BarcodeDataMap {
+  [key: number]: BarcodeData
+}
+
 export type CameraTypes = {
-  callback: Function;
+  callback: (data: BarcodeDataMap) => void;
   options: ScanBarcodeOptions;
 } & CameraProps;
