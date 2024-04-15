@@ -1,4 +1,9 @@
-import type { Frame, FrameProcessorPlugin, ScanBarcodeOptions, BarcodeDataMap } from './types';
+import type {
+  Frame,
+  FrameProcessorPlugin,
+  ScanBarcodeOptions,
+  BarcodeDataMap,
+} from './types';
 import { VisionCameraProxy } from 'react-native-vision-camera';
 import { Platform } from 'react-native';
 
@@ -11,7 +16,10 @@ const LINKING_ERROR: string =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-export function scanBarcodes(frame: Frame, options: ScanBarcodeOptions): BarcodeDataMap {
+export function scanBarcodes(
+  frame: Frame,
+  options: ScanBarcodeOptions
+): BarcodeDataMap {
   'worklet';
   if (plugin == null) throw new Error(LINKING_ERROR);
   // @ts-ignore

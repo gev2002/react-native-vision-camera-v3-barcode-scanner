@@ -23,18 +23,18 @@ export interface ScanBarcodeOptions {
 }
 
 export type BarcodeData = {
-  bottom: number
-  height: number
-  left: number
-  rawValue: string
-  right: number
-  top: number
-  width: number
-}
+  bottom: number;
+  height: number;
+  left: number;
+  rawValue: string;
+  right: number;
+  top: number;
+  width: number;
+};
 
 export type BarcodeDataMap = {
-  [key: number]: BarcodeData
-}
+  [key: number]: BarcodeData;
+};
 
 export type CameraTypes = {
   callback: (data: BarcodeDataMap) => void;

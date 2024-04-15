@@ -1,16 +1,24 @@
-import React, { forwardRef,type ForwardedRef } from 'react';
+import React, { forwardRef, type ForwardedRef } from 'react';
 import {
   Camera as VisionCamera,
   useFrameProcessor,
 } from 'react-native-vision-camera';
 import { useRunInJS } from 'react-native-worklets-core';
 import { scanBarcodes } from './scanBarcodes';
-import type { CameraTypes, Frame, FrameProcessor, BarcodeDataMap } from './types';
+import type {
+  CameraTypes,
+  Frame,
+  FrameProcessor,
+  BarcodeDataMap,
+} from './types';
 
 export { scanBarcodes } from './scanBarcodes';
-export type { BarcodeData, BarcodeDataMap } from './types'
+export type { BarcodeData, BarcodeDataMap } from './types';
 
-export const Camera = forwardRef(function Camera(props: CameraTypes,ref:ForwardedRef<any>) {
+export const Camera = forwardRef(function Camera(
+  props: CameraTypes,
+  ref: ForwardedRef<any>
+) {
   const { callback, device, options } = props;
   // @ts-ignore
   const useWorklets = useRunInJS((data: BarcodeDataMap): void => {
@@ -28,6 +36,8 @@ export const Camera = forwardRef(function Camera(props: CameraTypes,ref:Forwarde
     []
   );
   return (
-    !!device && <VisionCamera ref={ref} frameProcessor={frameProcessor} {...props} />
+    !!device && (
+      <VisionCamera ref={ref} frameProcessor={frameProcessor} {...props} />
+    )
   );
 });
