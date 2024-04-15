@@ -5,21 +5,22 @@ import {
 } from 'react-native-vision-camera';
 import { useRunInJS } from 'react-native-worklets-core';
 import { scanBarcodes } from './scanBarcodes';
-import type { CameraTypes, Frame, FrameProcessor } from './types';
+import type { CameraTypes, Frame, FrameProcessor, BarcodeDataMap } from './types';
 
 export { scanBarcodes } from './scanBarcodes';
+export type { BarcodeData, BarcodeDataMap } from './types'
 
 export const Camera = forwardRef(function Camera(props: CameraTypes,ref:ForwardedRef<any>) {
   const { callback, device, options } = props;
   // @ts-ignore
-  const useWorklets = useRunInJS((data: object): void => {
+  const useWorklets = useRunInJS((data: BarcodeDataMap): void => {
     callback(data);
   }, []);
   const frameProcessor: FrameProcessor = useFrameProcessor(
     (frame: Frame): void => {
       'worklet';
       // @ts-ignore
-      const data: object = scanBarcodes(frame, options);
+      const data = scanBarcodes(frame, options);
       // @ts-ignore
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useWorklets(data);
