@@ -8,7 +8,7 @@ import { scanBarcodes } from './scanBarcodes';
 import type {
   CameraTypes,
   Frame,
-  FrameProcessor,
+  ReadonlyFrameProcessor,
   BarcodeDataMap,
 } from './types';
 
@@ -24,7 +24,7 @@ export const Camera = forwardRef(function Camera(
   const useWorklets = useRunInJS((data: BarcodeDataMap): void => {
     callback(data);
   }, []);
-  const frameProcessor: FrameProcessor = useFrameProcessor(
+  const frameProcessor: ReadonlyFrameProcessor = useFrameProcessor(
     (frame: Frame): void => {
       'worklet';
       // @ts-ignore
