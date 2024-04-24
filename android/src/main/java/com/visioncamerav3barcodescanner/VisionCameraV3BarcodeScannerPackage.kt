@@ -4,8 +4,7 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
-import com.mrousavy.camera.frameprocessor.FrameProcessorPluginRegistry
-
+import com.mrousavy.camera.frameprocessors.FrameProcessorPluginRegistry
 
 class VisionCameraV3BarcodeScannerPackage : ReactPackage {
   companion object {
@@ -18,9 +17,7 @@ class VisionCameraV3BarcodeScannerPackage : ReactPackage {
   override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
     return emptyList()
   }
-
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
     return emptyList()
   }
-
 }
