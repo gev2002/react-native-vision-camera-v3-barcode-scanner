@@ -1,34 +1,37 @@
-import React, { forwardRef, type ForwardedRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import {
   Camera as VisionCamera,
   useFrameProcessor,
 } from 'react-native-vision-camera';
-import { useRunInJS } from 'react-native-worklets-core';
-import { scanBarcodes } from './scanBarcodes';
+import { createBarcodeScannerPlugin } from './scanBarcodes';
 import type {
-  CameraTypes,
-  Frame,
   ReadonlyFrameProcessor,
-  BarcodeDataMap,
+  Frame,
+  CameraTypes,
+  ForwardedRef,
+  Barcode,
+  BarcodeScannerPlugin,
+  ScanBarcodeOptions,
 } from './types';
-
-export { scanBarcodes } from './scanBarcodes';
-export type { BarcodeData, BarcodeDataMap } from './types';
+import { useRunOnJS } from 'react-native-worklets-core';
 
 export const Camera = forwardRef(function Camera(
   props: CameraTypes,
   ref: ForwardedRef<any>
 ) {
-  const { callback, device, options } = props;
+  const { device, callback, options = {}, ...p } = props;
   // @ts-ignore
-  const useWorklets = useRunInJS((data: BarcodeDataMap): void => {
-    callback(data);
-  }, []);
+  const { scanBarcodes } = useBarcodeScanner(options);
+  const useWorklets = useRunOnJS(
+    (data: Barcode): void => {
+      callback(data);
+    },
+    [options]
+  );
   const frameProcessor: ReadonlyFrameProcessor = useFrameProcessor(
-    (frame: Frame): void => {
+    (frame: Frame) => {
       'worklet';
-      // @ts-ignore
-      const data = scanBarcodes(frame, options);
+      const data: Barcode = scanBarcodes(frame);
       // @ts-ignore
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useWorklets(data);
@@ -36,8 +39,25 @@ export const Camera = forwardRef(function Camera(
     []
   );
   return (
-    !!device && (
-      <VisionCamera ref={ref} frameProcessor={frameProcessor} {...props} />
-    )
+    <>
+      {!!device && (
+        <VisionCamera
+          pixelFormat="yuv"
+          ref={ref}
+          frameProcessor={frameProcessor}
+          device={device}
+          {...p}
+        />
+      )}
+    </>
   );
 });
+
+export function useBarcodeScanner(
+  options?: ScanBarcodeOptions
+): BarcodeScannerPlugin {
+  return useMemo(
+    () => createBarcodeScannerPlugin(options || ['all']),
+    [options]
+  );
+}
