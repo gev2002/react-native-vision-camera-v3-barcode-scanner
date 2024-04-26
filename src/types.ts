@@ -1,7 +1,7 @@
 import type { CameraProps } from 'react-native-vision-camera';
 export type {
   Frame,
-  FrameProcessor,
+  ReadonlyFrameProcessor,
   FrameProcessorPlugin,
 } from 'react-native-vision-camera';
 export interface ScanBarcodeOptions {

@@ -2,8 +2,8 @@
 #import <MLKitBarcodeScanning/MLKBarcodeScannerOptions.h>
 #import <VisionCamera/FrameProcessorPlugin.h>
 #import <VisionCamera/FrameProcessorPluginRegistry.h>
-#import <VisionCamera/VisionCameraProxy.h>
 #import <VisionCamera/Frame.h>
+#import <React/RCTBridgeModule.h>
 @import MLKitVision;
 
 @interface VisionCameraV3BarcodeScannerPlugin : FrameProcessorPlugin

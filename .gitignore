@@ -69,7 +69,13 @@ android/keystores/debug.keystore
 !.yarn/versions
 .yarnrc.yml
 .yarn
+.pnp/
+.pnp.*
+
+# Lockfiles
 yarn.lock
+package-lock.json
+
 # Expo
 .expo/
 

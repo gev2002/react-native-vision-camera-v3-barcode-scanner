@@ -23,10 +23,9 @@ import com.google.mlkit.vision.barcode.common.Barcode.FORMAT_UPC_E
 import com.google.mlkit.vision.barcode.common.Barcode.FORMAT_EAN_8
 import com.google.mlkit.vision.barcode.common.Barcode.FORMAT_EAN_13
 import com.google.mlkit.vision.common.InputImage
-import com.mrousavy.camera.frameprocessor.Frame
-import com.mrousavy.camera.frameprocessor.FrameProcessorPlugin
-import com.mrousavy.camera.frameprocessor.VisionCameraProxy
-import com.mrousavy.camera.types.Orientation
+import com.mrousavy.camera.frameprocessors.Frame
+import com.mrousavy.camera.frameprocessors.FrameProcessorPlugin
+import com.mrousavy.camera.frameprocessors.VisionCameraProxy
 
 class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map<String, Any>?): FrameProcessorPlugin() {
 
@@ -49,11 +48,9 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
       else if (arguments?.get("all").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_ALL_FORMATS)
       else optionsBuilder.setBarcodeFormats(FORMAT_ALL_FORMATS)
 
-       val scanner = BarcodeScanning.getClient(optionsBuilder.build())
+      val scanner = BarcodeScanning.getClient(optionsBuilder.build())
       val mediaImage: Image = frame.image
-      val orientation: Orientation = frame.orientation
-
-      val image = InputImage.fromMediaImage(mediaImage, orientation.toDegrees())
+      val image = InputImage.fromMediaImage(mediaImage, frame.imageProxy.imageInfo.rotationDegrees)
       val task: Task<List<Barcode>> = scanner.process(image)
       val barcodes: List<Barcode> = Tasks.await(task)
       val array = WritableNativeArray()
