@@ -31,7 +31,8 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
 
   override fun callback(frame: Frame, arguments: Map<String, Any>?): Any {
     try {
-     val optionsBuilder = BarcodeScannerOptions.Builder()
+      val optionsBuilder = BarcodeScannerOptions.Builder()
+
       if (arguments?.get("code-128").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_CODE_128)
       else if (arguments?.get("code-39").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_CODE_39)
       else if (arguments?.get("code-93").toString().toBoolean()) optionsBuilder.setBarcodeFormats(FORMAT_CODE_93)
@@ -54,9 +55,11 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
       val task: Task<List<Barcode>> = scanner.process(image)
       val barcodes: List<Barcode> = Tasks.await(task)
       val array = WritableNativeArray()
+
       for (barcode in barcodes) {
         val map = WritableNativeMap()
         val bounds = barcode.boundingBox
+
         if (bounds != null) {
           map.putInt("width",bounds.width())
           map.putInt("height",bounds.height())
@@ -65,9 +68,11 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
           map.putInt("left",bounds.left)
           map.putInt("right",bounds.right)
         }
+
         val rawValue = barcode.rawValue
         map.putString("rawValue",rawValue)
         val valueType = barcode.valueType
+
         when (valueType) {
           Barcode.TYPE_WIFI -> {
             val ssid = barcode.wifi!!.ssid
@@ -82,12 +87,13 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
             map.putString("url",url)
           }
         }
+
         array.pushMap(map)
       }
+
       return array.toArrayList()
     } catch (e: Exception) {
        throw  Exception("Error processing barcode scanner: $e ")
     }
   }
-
 }
