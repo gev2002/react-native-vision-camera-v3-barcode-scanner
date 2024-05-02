@@ -28,7 +28,7 @@ import com.mrousavy.camera.frameprocessors.Frame
 import com.mrousavy.camera.frameprocessors.FrameProcessorPlugin
 import com.mrousavy.camera.frameprocessors.VisionCameraProxy
 
-class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map<String, Any>?): FrameProcessorPlugin() {
+class VisionCameraV3BarcodeScannerModule(proxy: VisionCameraProxy, options: Map<String, Any>?): FrameProcessorPlugin() {
     private var optionsBuilder = BarcodeScannerOptions.Builder()
 
     init {
@@ -37,7 +37,9 @@ class VisionCameraV3BarcodeScannerModule(proxy : VisionCameraProxy, options: Map
 
     override fun callback(frame: Frame, arguments: Map<String, Any>?): Any {
         try {
-            setCodeTypes(arguments)
+            if (arguments != null && arguments.containsKey("codeTypes")) {
+                setCodeTypes(arguments)
+            }
 
             val scanner = BarcodeScanning.getClient(this.optionsBuilder.build())
             val mediaImage: Image = frame.image
