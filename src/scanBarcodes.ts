@@ -1,14 +1,12 @@
-import {
-  type FrameProcessorPlugin,
-  VisionCameraProxy,
-} from 'react-native-vision-camera';
-import type {
-  Frame,
-  ScanBarcodeOptions,
-  BarcodeScannerPlugin,
-  Barcode,
-} from './types';
 import { Platform } from 'react-native';
+import { VisionCameraProxy } from 'react-native-vision-camera';
+import type {
+  BarcodeData,
+  BarcodeScannerOptions,
+  BarcodeScannerPlugin,
+  Frame,
+  FrameProcessorPlugin,
+} from './types';
 
 const LINKING_ERROR: string =
   `The package 'react-native-vision-camera-v3-barcode-scanner' doesn't seem to be linked. Make sure: \n\n` +
@@ -16,20 +14,80 @@ const LINKING_ERROR: string =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
+/**
+ * Creates a barcode scanner plugin with the given options.
+ *
+ * @param options The options for the barcode scanner.
+ *
+ * @throws {Error} If the frame processor plugin is not initialized.
+ *
+ * @returns An object with a `scanBarcodes` function that can be used to scan barcodes from a given frame.
+ *
+ * @example
+ * ```ts
+ * const barcodeScannerPlugin = createBarcodeScannerPlugin({ codeTypes: ['all'] });
+ * const frameProcessor = useFrameProcessor((frame) => {
+ *   'worklet'
+ *   runAsync(frame, () => {
+ *     'worklet'
+ *     const data = barcodeScannerPlugin.scanBarcodes(frame)
+ *     console.log(data)
+ *   })
+ * }, [])
+ * ```
+ */
 export function createBarcodeScannerPlugin(
-  options: ScanBarcodeOptions
+  options: BarcodeScannerOptions
 ): BarcodeScannerPlugin {
   const plugin: FrameProcessorPlugin | undefined =
-    VisionCameraProxy.initFrameProcessorPlugin('scanBarcodes', {
-      options,
-    });
-  if (!plugin) {
-    throw new Error(LINKING_ERROR);
-  }
+    VisionCameraProxy.initFrameProcessorPlugin('scanBarcodes', { ...options });
+
+  if (!plugin) throw new Error(LINKING_ERROR);
+
   return {
-    scanBarcodes: (frame: Frame): Barcode => {
+    scanBarcodes: (frame: Frame): BarcodeData => {
       'worklet';
-      return plugin.call(frame) as unknown as Barcode;
+      return plugin.call(frame) as unknown as BarcodeData;
     },
   };
+}
+
+const plugin: FrameProcessorPlugin | undefined =
+  VisionCameraProxy.initFrameProcessorPlugin('scanBarcodes');
+
+/**
+ * Scans barcodes from a given frame.
+ *
+ * Note: This function has been deprecated. Use {@link createBarcodeScannerPlugin} instead.
+ *
+ * @param frame The frame to scan for barcodes.
+ * @param options The options for the barcode scanner.
+ *
+ * @throws {Error} If the frame processor plugin is not initialized.
+ *
+ * @returns The scanned barcode data.
+ *
+ * @example
+ * ```ts
+ * const frameProcessor = useFrameProcessor((frame) => {
+ *   'worklet'
+ *   runAsync(frame, () => {
+ *     'worklet'
+ *     const data = scanBarcodes(frame, { codeTypes: ['all'] })
+ *     console.log(data)
+ *   })
+ * }, [])
+ * ```
+ *
+ * @deprecated
+ */
+export function scanBarcodes(
+  frame: Frame,
+  options: BarcodeScannerOptions
+): BarcodeData {
+  'worklet';
+  if (plugin == null) throw new Error(LINKING_ERROR);
+
+  // @ts-ignore
+  return options ? plugin.call(frame, options) : plugin.call(frame);
 }
