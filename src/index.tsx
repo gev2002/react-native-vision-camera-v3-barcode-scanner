@@ -30,7 +30,7 @@ export * from './types';
  *
  * @example
  * ```tsx
- * <Camera device={device} callback={handleBarcode} options={{ codeTypes: ['all'] }} />
+ * <Camera device={device} callback={handleBarcode} options={{ codeTypes: ['all_formats'] }} />
  * ```
  */
 export const Camera = forwardRef(function Camera(
@@ -81,14 +81,14 @@ export const Camera = forwardRef(function Camera(
  *
  * @example
  * ```tsx
- * const { scanBarcodes } = useBarcodeScannerPlugin({ codeTypes: ['all'] });
+ * const { scanBarcodes } = useBarcodeScannerPlugin({ codeTypes: ['all_formats'] });
  * ```
  */
 export function useBarcodeScannerPlugin(
   options?: BarcodeScannerOptions
 ): BarcodeScannerPlugin {
   return useMemo(
-    () => createBarcodeScannerPlugin(options ?? { codeTypes: ['all'] }),
+    () => createBarcodeScannerPlugin(options ?? { codeTypes: ['all_formats'] }),
     [options]
   );
 }

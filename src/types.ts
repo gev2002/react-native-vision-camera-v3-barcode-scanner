@@ -7,21 +7,43 @@ export type {
   ReadonlyFrameProcessor,
 } from 'react-native-vision-camera';
 
+/** CodeTypes from Google's MLkit */
+/**
+ * @example
+ * ```
+ * "unknown" -> FORMAT_UNKNOWN
+ * "all_formats" -> FORMAT_ALL_FORMATS
+ * "code_128" -> FORMAT_CODE_128
+ * "code_39" -> FORMAT_CODE_39
+ * "code_93" -> FORMAT_CODE_93
+ * "codabar" -> FORMAT_CODABAR
+ * "data_matrix" -> FORMAT_DATA_MATRIX
+ * "ean_13" -> FORMAT_EAN_13
+ * "ean_8" -> FORMAT_EAN_8
+ * "itf" -> FORMAT_ITF
+ * "qr_code" -> FORMAT_QR_CODE
+ * "upc_a" -> FORMAT_UPC_A
+ * "upc_e" -> FORMAT_UPC_E
+ * "pdf417" -> FORMAT_PDF417
+ * "aztec" -> FORMAT_AZTEC
+ * ```
+ */
 export type CodeType =
-  | 'aztec'
-  | 'code128'
-  | 'code39'
-  | 'code39mod43'
-  | 'code93'
-  | 'ean13'
-  | 'ean8'
-  | 'pdf417'
-  | 'qr'
+  | 'unknown'
+  | 'all_formats'
+  | 'code_128'
+  | 'code_39'
+  | 'code_93'
+  | 'codabar'
+  | 'data_matrix'
+  | 'ean_13'
+  | 'ean_8'
+  | 'itf'
+  | 'qr_code'
+  | 'upc_a'
   | 'upc_e'
-  | 'interleaved2of5'
-  | 'itf14'
-  | 'datamatrix'
-  | 'all';
+  | 'pdf417'
+  | 'aztec';
 
 export type BarcodeScannerOptions = {
   codeTypes: CodeType[];

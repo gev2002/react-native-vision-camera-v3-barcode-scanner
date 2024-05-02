@@ -25,7 +25,7 @@ const LINKING_ERROR: string =
  *
  * @example
  * ```ts
- * const barcodeScannerPlugin = createBarcodeScannerPlugin({ codeTypes: ['all'] });
+ * const barcodeScannerPlugin = createBarcodeScannerPlugin({ codeTypes: ['all_formats'] });
  * const frameProcessor = useFrameProcessor((frame) => {
  *   'worklet'
  *   runAsync(frame, () => {
@@ -73,7 +73,7 @@ const plugin: FrameProcessorPlugin | undefined =
  *   'worklet'
  *   runAsync(frame, () => {
  *     'worklet'
- *     const data = scanBarcodes(frame, { codeTypes: ['all'] })
+ *     const data = scanBarcodes(frame, { codeTypes: ['all_formats'] })
  *     console.log(data)
  *   })
  * }, [])

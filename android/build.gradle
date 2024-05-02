@@ -90,8 +90,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'com.google.mlkit:barcode-scanning:17.2.0'
   implementation project(':react-native-vision-camera')
+  implementation 'com.google.mlkit:barcode-scanning:17.2.0'
   implementation "androidx.camera:camera-core:1.1.0"
 }
-
