@@ -58,7 +58,7 @@ const plugin: FrameProcessorPlugin | undefined =
 /**
  * Scans barcodes from a given frame.
  *
- * Note: This function has been deprecated. Use {@link createBarcodeScannerPlugin} instead.
+ * Note: Use {@link createBarcodeScannerPlugin} instead.
  *
  * @param frame The frame to scan for barcodes.
  * @param options The options for the barcode scanner.
@@ -78,8 +78,6 @@ const plugin: FrameProcessorPlugin | undefined =
  *   })
  * }, [])
  * ```
- *
- * @deprecated
  */
 export function scanBarcodes(
   frame: Frame,
