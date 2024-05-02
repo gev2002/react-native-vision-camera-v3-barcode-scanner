@@ -16,43 +16,14 @@
 - (instancetype _Nonnull)initWithProxy:(VisionCameraProxyHolder*)proxy
                            withOptions:(NSDictionary* _Nullable)options {
     self = [super initWithProxy:proxy withOptions:options];
-
+    [self setCodeTypes:options];
     return self;
 }
 
 - (id _Nullable)callback:(Frame* _Nonnull)frame
            withArguments:(NSDictionary* _Nullable)arguments {
-    options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatAll)];
-
-    if (arguments != nil && [arguments.allKeys containsObject:@"codeType"]) {
-        NSString *codeType = arguments[@"codeType"];
-        if ([codeType  isEqual: @"code-128"]) {
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatCode128)];
-        } else if ([codeType  isEqual: @"code-39"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatCode39)];
-        } else if ([codeType  isEqual: @"code-93"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatCode93)];
-        } else if ([codeType  isEqual: @"codabar"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatCodaBar)];
-        } else if ([codeType  isEqual: @"ean-13"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatEAN13)];
-        } else if ([codeType  isEqual: @"ean-8"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatEAN8)];
-        } else if ([codeType  isEqual: @"itf"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatITF)];
-        } else if ([codeType  isEqual: @"upc-e"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatUPCE)];
-        } else if ([codeType  isEqual: @"upc-a"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatUPCA)];
-        } else if ([codeType  isEqual: @"qr"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatQRCode)];
-        } else if ([codeType  isEqual: @"pdf-417"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatPDF417)];
-        } else if ([codeType  isEqual: @"aztec"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatAztec)];
-        } else if ([codeType isEqual:@"all"]){
-            options = [[MLKBarcodeScannerOptions alloc] initWithFormats:(MLKBarcodeFormatAll)];
-        }
+    if (arguments != nil && [arguments.allKeys containsObject:@"codeTypes"]) {
+        [self setCodeTypes:arguments];
     }
 
     MLKBarcodeScanner *barcodeScanner = [MLKBarcodeScanner barcodeScannerWithOptions:options];
@@ -113,6 +84,53 @@
 
     dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER);
     return data;
+}
+
+- (void)setCodeTypes:(NSDictionary* _Nullable)rawArguments {
+    NSArray *codeTypes = rawArguments[@"codeTypes"] ?: @[@"all_formats"];
+    MLKBarcodeFormat formats = MLKBarcodeFormatAll;
+
+    for (NSString *codeType in codeTypes) {
+        formats = formats | [self barcodeFormatForString:codeType];
+    }
+
+    options = [[MLKBarcodeScannerOptions alloc] initWithFormats:formats];
+}
+
+- (MLKBarcodeFormat)barcodeFormatForString:(NSString *)string {
+    if ([string isEqualToString:@"unknown"]) {
+        return MLKBarcodeFormatUnknown;
+    } else if ([string isEqualToString:@"all_formats"]) {
+        return MLKBarcodeFormatAll;
+    } else if ([string isEqualToString:@"code_128"]) {
+        return MLKBarcodeFormatCode128;
+    } else if ([string isEqualToString:@"code_39"]) {
+        return MLKBarcodeFormatCode39;
+    } else if ([string isEqualToString:@"code_93"]) {
+        return MLKBarcodeFormatCode93;
+    } else if ([string isEqualToString:@"codabar"]) {
+        return MLKBarcodeFormatCodaBar;
+    } else if ([string isEqualToString:@"data_matrix"]) {
+        return MLKBarcodeFormatDataMatrix;
+    } else if ([string isEqualToString:@"ean_13"]) {
+        return MLKBarcodeFormatEAN13;
+    } else if ([string isEqualToString:@"ean_8"]) {
+        return MLKBarcodeFormatEAN8;
+    } else if ([string isEqualToString:@"itf"]) {
+        return MLKBarcodeFormatITF;
+    } else if ([string isEqualToString:@"qr_code"]) {
+        return MLKBarcodeFormatQRCode;
+    } else if ([string isEqualToString:@"upc_a"]) {
+        return MLKBarcodeFormatUPCA;
+    } else if ([string isEqualToString:@"upc_e"]) {
+        return MLKBarcodeFormatUPCE;
+    } else if ([string isEqualToString:@"pdf417"]) {
+        return MLKBarcodeFormatPDF417;
+    } else if ([string isEqualToString:@"aztec"]) {
+        return MLKBarcodeFormatAztec;
+    } else {
+        return 0;
+    }
 }
 
 VISION_EXPORT_FRAME_PROCESSOR(VisionCameraV3BarcodeScannerPlugin, scanBarcodes)
