@@ -7,8 +7,9 @@ export type {
   ReadonlyFrameProcessor,
 } from 'react-native-vision-camera';
 
-/** CodeTypes from Google's MLkit */
 /**
+ * CodeTypes from Google's MLkit
+ *
  * @example
  * ```
  * "unknown" -> FORMAT_UNKNOWN
@@ -69,5 +70,26 @@ export type CameraTypes = {
 } & CameraProps;
 
 export type BarcodeScannerPlugin = {
+  /**
+   * Scans barcodes from a given frame.
+   *
+   * @param frame The frame to scan for barcodes.
+   *
+   * @throws {Error} If the frame processor plugin is not initialized.
+   *
+   * @returns The scanned barcode data.
+   *
+   * @example
+   * ```ts
+   * const frameProcessor = useFrameProcessor((frame) => {
+   *   'worklet'
+   *   runAsync(frame, () => {
+   *     'worklet'
+   *     const data = scanBarcodes(frame)
+   *     console.log(data)
+   *   })
+   * }, [])
+   * ```
+   */
   scanBarcodes: (frame: Frame) => BarcodeData;
 };
